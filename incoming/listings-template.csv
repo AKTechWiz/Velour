@@ -1,0 +1,3 @@
+name,category,subcategory,price,compareAtPrice,description,sizes,image1,image2,featured,isNew,trending
+Example Wrap Dress,women,Dresses,149,,A demo wrap dress in viscose crepe.,XS|S|M|L,example-1.jpg,example-2.jpg,yes,yes,no
+Example Bomber Jacket,men,Outerwear,199,249,A demo bomber in matte nylon.,S|M|L|XL,example-3.jpg,example-4.jpg,no,yes,yes
