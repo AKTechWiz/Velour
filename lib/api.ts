@@ -168,51 +168,25 @@ async function fetchBaseProductList(): Promise<Product[]> {
   }
 
   // 3. Merge: Guarantee all BASE_PRODUCTS (Pakistani luxury catalogue) are loaded,
-  // supplemented by any database products.
+  // supplemented by live database pricing and inventory updates.
   const combinedMap = new Map<string, Product>();
 
-  // Add all curated Pakistani apparel items first
   for (const p of ALL_PRODUCTS) {
     combinedMap.set(p.id, p);
-    if (p.slug) combinedMap.set(p.slug, p);
   }
 
-  // Merge database products
   for (const p of dbProducts) {
-    const key = p.id;
-    if (combinedMap.has(key)) {
-      const existing = combinedMap.get(key)!;
-      combinedMap.set(key, {
+    if (combinedMap.has(p.id)) {
+      const existing = combinedMap.get(p.id)!;
+      combinedMap.set(p.id, {
         ...existing,
-        stock: p.stock ?? existing.stock,
-        // Only override price if DB price is in PKR range (> 1000)
+        stock: typeof p.stock === "number" ? p.stock : existing.stock,
         price: p.price > 1000 ? p.price : existing.price,
       });
-    } else {
-      // If it's a legacy USD product from early tests, convert to realistic PKR
-      const adjustedPrice = p.price < 1000 ? Math.round((p.price * 280) / 100) * 100 : p.price;
-      const adjustedCompare = p.compareAtPrice
-        ? (p.compareAtPrice < 1000 ? Math.round((p.compareAtPrice * 280) / 100) * 100 : p.compareAtPrice)
-        : undefined;
-
-      combinedMap.set(key, {
-        ...p,
-        price: adjustedPrice,
-        compareAtPrice: adjustedCompare,
-      });
     }
   }
 
-  // Unique list by ID
-  const uniqueProducts: Product[] = [];
-  const seenIds = new Set<string>();
-  for (const prod of combinedMap.values()) {
-    if (!seenIds.has(prod.id)) {
-      seenIds.add(prod.id);
-      uniqueProducts.push(prod);
-    }
-  }
-
+  const uniqueProducts: Product[] = Array.from(combinedMap.values());
   cachedAllProducts = { data: uniqueProducts, timestamp: now };
   return uniqueProducts;
 }
@@ -224,20 +198,33 @@ export async function getProducts(q: ProductQuery = {}): Promise<Product[]> {
   if (q.category) {
     if (q.category === "sale") {
       list = list.filter((p) => p.category === "sale" || (p.compareAtPrice && p.compareAtPrice > p.price));
-    } else if (q.category === "outerwear") {
-      list = list.filter((p) => p.category === "outerwear" || p.subcategory.toLowerCase() === "outerwear" || p.fabric?.toLowerCase() === "velvet");
+    } else if (q.category === "men") {
+      list = list.filter((p) => p.category === "men");
+    } else if (q.category === "accessories") {
+      list = list.filter((p) => p.category === "accessories");
     } else if (q.category === "unstitched") {
-      list = list.filter((p) => p.category === "unstitched" || p.subcategory.toLowerCase() === "unstitched" || Boolean(p.unstitchedDetails));
+      list = list.filter((p) => p.category === "unstitched" || Boolean(p.unstitchedDetails));
     } else if (q.category === "festive") {
-      list = list.filter((p) => p.category === "festive" || p.subcategory.toLowerCase() === "festive" || p.occasion === "Festive" || p.occasion === "Wedding Guest" || p.occasion === "Bridal");
+      list = list.filter((p) => p.category === "festive");
+    } else if (q.category === "outerwear") {
+      list = list.filter(
+        (p) =>
+          p.category === "outerwear" ||
+          (p.fabric === "Velvet" && p.category !== "accessories" && p.category !== "men")
+      );
+    } else if (q.category === "women") {
+      list = list.filter((p) => p.category === "women" || p.category === "unstitched" || p.category === "festive");
     } else {
       list = list.filter((p) => p.category === q.category);
     }
   }
 
   if (q.sub && q.sub !== "all") {
-    const target = q.sub.toLowerCase();
-    list = list.filter((p) => p.subcategory.toLowerCase() === target);
+    const target = q.sub.toLowerCase().trim();
+    list = list.filter((p) => {
+      const sub = p.subcategory.toLowerCase().trim();
+      return sub === target || sub.includes(target) || target.includes(sub);
+    });
   }
 
   // Fabric filter
