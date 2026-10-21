@@ -6,9 +6,10 @@ interface Props {
   children: ReactNode;
   delay?: number;
   className?: string;
+  style?: CSSProperties;
 }
 
-export default function ScrollReveal({ children, delay = 0, className = "" }: Props) {
+export default function ScrollReveal({ children, delay = 0, className = "", style: customStyle }: Props) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -29,7 +30,7 @@ export default function ScrollReveal({ children, delay = 0, className = "" }: Pr
     return () => io.disconnect();
   }, []);
 
-  const style: CSSProperties = { transitionDelay: `${delay}ms` };
+  const style: CSSProperties = { transitionDelay: `${delay}ms`, ...customStyle };
 
   return (
     <div ref={ref} className={`reveal ${className}`} style={style}>

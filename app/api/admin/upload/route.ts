@@ -28,10 +28,7 @@ export async function POST(req: Request) {
 
       const { data, error } = await insforgeAdmin.storage
         .from("product-images")
-        .upload(storageKey, blob, {
-          upsert: true,
-          contentType: file.type || "image/jpeg",
-        });
+        .upload(storageKey, blob);
 
       if (error) {
         console.error("Storage upload error:", error);

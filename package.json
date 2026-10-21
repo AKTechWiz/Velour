@@ -16,13 +16,13 @@
     "@types/node": "^22.10.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
-    "next": "^15.1.6",
+    "next": "^15.5.25",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "typescript": "^5.7.0"
   },
   "optionalDependencies": {
-    "@next/swc-linux-x64-gnu": "^15.1.6",
-    "@next/swc-linux-x64-musl": "^15.1.6"
+    "@next/swc-linux-x64-gnu": "^15.5.25",
+    "@next/swc-linux-x64-musl": "^15.5.25"
   }
 }

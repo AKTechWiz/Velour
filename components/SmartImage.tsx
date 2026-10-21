@@ -22,6 +22,11 @@ export default function SmartImage(props: ImageProps) {
         return;
       }
     }
+    if (errorCount <= 1 && typeof src === "string" && src !== "/images/products/green-lawn-1.jpg") {
+      setErrorCount(2);
+      setSrc("/images/products/green-lawn-1.jpg");
+      return;
+    }
     setErrorCount((c) => c + 1);
   };
 

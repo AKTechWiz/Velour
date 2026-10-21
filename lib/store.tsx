@@ -19,8 +19,9 @@ import { getProductById, ALL_PRODUCTS } from "./api";
 interface Toast {
   id: number;
   message: string;
-  kind: "success" | "info";
+  kind: "success" | "info" | "error";
 }
+
 
 interface ToastContextValue {
   push: (message: string, kind?: Toast["kind"]) => void;
@@ -63,6 +64,8 @@ interface CartContextValue {
   items: CartItem[];
   count: number;
   subtotal: number;
+  miniBagOpen: boolean;
+  setMiniBagOpen: (open: boolean) => void;
   addItem: (item: Omit<CartItem, "qty">, qty?: number) => void;
   updateQty: (productId: string, size: string, qty: number) => void;
   updateQuantity: (productId: string, size: string, qty: number) => void;
@@ -73,6 +76,7 @@ interface CartContextValue {
   getCartCount: () => number;
   getSubtotal: () => number;
 }
+
 
 const CartContext = createContext<CartContextValue | null>(null);
 
@@ -91,6 +95,7 @@ export function useCart() {
 function CartProviderInner({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [hydrated, setHydrated] = useState(false);
+  const [miniBagOpen, setMiniBagOpen] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
   const userIdRef = useRef<string | null>(null);
 
@@ -125,7 +130,7 @@ function CartProviderInner({ children }: { children: ReactNode }) {
                   price: p.price,
                   size: r.size,
                   qty: r.quantity,
-                  image: p.images[0] || "/images/products/w-silk-dress-1.jpg",
+                  image: p.images[0] || "/images/products/green-lawn-1.jpg",
                 });
               }
             }
@@ -195,6 +200,7 @@ function CartProviderInner({ children }: { children: ReactNode }) {
       }
       return [...prev, { ...item, qty }];
     });
+    setMiniBagOpen(true);
   }, []);
 
   const updateQty = useCallback((productId: string, size: string, qty: number) => {
@@ -350,6 +356,8 @@ function CartProviderInner({ children }: { children: ReactNode }) {
       items,
       count,
       subtotal,
+      miniBagOpen,
+      setMiniBagOpen,
       addItem,
       updateQty,
       updateQuantity: updateQty,
@@ -360,7 +368,7 @@ function CartProviderInner({ children }: { children: ReactNode }) {
       getCartCount: () => count,
       getSubtotal: () => subtotal,
     };
-  }, [items, addItem, updateQty, increaseQuantity, decreaseQuantity, removeItem, clearCart]);
+  }, [items, miniBagOpen, setMiniBagOpen, addItem, updateQty, increaseQuantity, decreaseQuantity, removeItem, clearCart]);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }

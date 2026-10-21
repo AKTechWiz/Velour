@@ -16,11 +16,18 @@ export const LEGACY_ID_ALIASES: Record<string, string> = {
   "pleated-tailored-trousers": "pleated-trousers",
 };
 
-export type SortKey = "featured" | "price-asc" | "price-desc" | "newest";
+export type SortKey = "featured" | "price-asc" | "price-desc" | "newest" | "discount";
 
 export interface ProductQuery {
-  category?: "women" | "men" | "outerwear" | "sale" | "accessories";
+  category?: import("./types").Category;
   sub?: string;
+  fabric?: string | string[];
+  pieceCount?: string | string[];
+  occasion?: string | string[];
+  sizes?: string | string[];
+  minPrice?: number;
+  maxPrice?: number;
+  inStockOnly?: boolean;
   sort?: SortKey;
 }
 
@@ -74,26 +81,35 @@ function mapProduct(row: Record<string, unknown>): Product {
     images = [`/images/products/${canonicalId}-1.jpg`, `/images/products/${canonicalId}-2.jpg`];
   }
 
+  const validCategories = ["women", "men", "unstitched", "festive", "outerwear", "sale", "accessories"];
+  const cat = validCategories.includes(String(row.category)) ? (row.category as import("./types").Category) : "women";
+
   return {
     id,
     slug,
     name,
-    category: (["women", "men", "outerwear", "sale", "accessories"].includes(String(row.category))
-      ? row.category
-      : "women") as "women" | "men" | "outerwear" | "sale" | "accessories",
+    category: cat,
     subcategory: String(row.subcategory || ""),
     price: Number(row.price || 0),
-    compareAtPrice: row.compare_at_price ? Number(row.compare_at_price) : undefined,
+    compareAtPrice: row.compare_at_price ? Number(row.compare_at_price) : (row.compareAtPrice ? Number(row.compareAtPrice) : undefined),
     description: String(row.description || ""),
     sizes: Array.isArray(row.sizes) ? row.sizes : ["XS", "S", "M", "L", "XL"],
     images,
     featured: Boolean(row.featured),
-    isNew: Boolean(row.is_new),
+    isNew: Boolean(row.is_new ?? row.isNew),
     trending: Boolean(row.trending),
     material: row.material ? String(row.material) : undefined,
     color: row.color ? String(row.color) : undefined,
+    fabric: row.fabric ? String(row.fabric) : undefined,
+    pieceCount: (row.piece_count ? String(row.piece_count) : (row.pieceCount ? String(row.pieceCount) : undefined)) as any,
+    workType: (row.work_type ? String(row.work_type) : (row.workType ? String(row.workType) : undefined)) as any,
+    occasion: (row.occasion ? String(row.occasion) : undefined) as any,
+    unstitchedDetails: (row.unstitched_details || row.unstitchedDetails) as any,
+    stitchingAvailable: typeof row.stitching_available === "boolean" ? row.stitching_available : (typeof row.stitchingAvailable === "boolean" ? row.stitchingAvailable : undefined),
+    stitchingFee: row.stitching_fee ? Number(row.stitching_fee) : (row.stitchingFee ? Number(row.stitchingFee) : undefined),
+    modelInfo: (row.model_info || row.modelInfo) as any,
     stock: typeof row.stock === "number" ? row.stock : 20,
-    createdAt: row.created_at ? String(row.created_at) : undefined,
+    createdAt: row.created_at ? String(row.created_at) : (row.createdAt ? String(row.createdAt) : undefined),
   };
 }
 
@@ -106,6 +122,12 @@ function applySort(list: Product[], sort: SortKey): Product[] {
       return arr.sort((a, b) => b.price - a.price);
     case "newest":
       return arr.sort((a, b) => Number(b.isNew) - Number(a.isNew));
+    case "discount":
+      return arr.sort((a, b) => {
+        const discA = a.compareAtPrice && a.compareAtPrice > a.price ? (a.compareAtPrice - a.price) / a.compareAtPrice : 0;
+        const discB = b.compareAtPrice && b.compareAtPrice > b.price ? (b.compareAtPrice - b.price) / b.compareAtPrice : 0;
+        return discB - discA;
+      });
     case "featured":
     default:
       return arr.sort(
@@ -120,6 +142,8 @@ async function fetchBaseProductList(): Promise<Product[]> {
     return cachedAllProducts.data;
   }
 
+  let dbProducts: Product[] = [];
+
   // 1. Fetch from InsForge database
   try {
     const { data, error } = await insforge.database
@@ -127,27 +151,70 @@ async function fetchBaseProductList(): Promise<Product[]> {
       .select("*");
 
     if (!error && data && data.length > 0) {
-      const liveList = data.map(mapProduct);
-      cachedAllProducts = { data: liveList, timestamp: now };
-      return liveList;
+      dbProducts = data.map(mapProduct);
     }
   } catch (err) {
     console.warn("InsForge products query error:", err);
   }
 
-  // 2. Fallback to Supabase if configured
-  try {
-    const { data, error } = await supabase.from("products").select("*");
-    if (!error && data && data.length > 0) {
-      const liveList = data.map(mapProduct);
-      cachedAllProducts = { data: liveList, timestamp: now };
-      return liveList;
-    }
-  } catch {}
+  // 2. Fallback to Supabase if InsForge is empty
+  if (dbProducts.length === 0) {
+    try {
+      const { data, error } = await supabase.from("products").select("*");
+      if (!error && data && data.length > 0) {
+        dbProducts = data.map(mapProduct);
+      }
+    } catch {}
+  }
 
-  // 3. Bundled fallback
-  cachedAllProducts = { data: ALL_PRODUCTS, timestamp: now };
-  return ALL_PRODUCTS;
+  // 3. Merge: Guarantee all BASE_PRODUCTS (Pakistani luxury catalogue) are loaded,
+  // supplemented by any database products.
+  const combinedMap = new Map<string, Product>();
+
+  // Add all curated Pakistani apparel items first
+  for (const p of ALL_PRODUCTS) {
+    combinedMap.set(p.id, p);
+    if (p.slug) combinedMap.set(p.slug, p);
+  }
+
+  // Merge database products
+  for (const p of dbProducts) {
+    const key = p.id;
+    if (combinedMap.has(key)) {
+      const existing = combinedMap.get(key)!;
+      combinedMap.set(key, {
+        ...existing,
+        stock: p.stock ?? existing.stock,
+        // Only override price if DB price is in PKR range (> 1000)
+        price: p.price > 1000 ? p.price : existing.price,
+      });
+    } else {
+      // If it's a legacy USD product from early tests, convert to realistic PKR
+      const adjustedPrice = p.price < 1000 ? Math.round((p.price * 280) / 100) * 100 : p.price;
+      const adjustedCompare = p.compareAtPrice
+        ? (p.compareAtPrice < 1000 ? Math.round((p.compareAtPrice * 280) / 100) * 100 : p.compareAtPrice)
+        : undefined;
+
+      combinedMap.set(key, {
+        ...p,
+        price: adjustedPrice,
+        compareAtPrice: adjustedCompare,
+      });
+    }
+  }
+
+  // Unique list by ID
+  const uniqueProducts: Product[] = [];
+  const seenIds = new Set<string>();
+  for (const prod of combinedMap.values()) {
+    if (!seenIds.has(prod.id)) {
+      seenIds.add(prod.id);
+      uniqueProducts.push(prod);
+    }
+  }
+
+  cachedAllProducts = { data: uniqueProducts, timestamp: now };
+  return uniqueProducts;
 }
 
 export async function getProducts(q: ProductQuery = {}): Promise<Product[]> {
@@ -158,7 +225,11 @@ export async function getProducts(q: ProductQuery = {}): Promise<Product[]> {
     if (q.category === "sale") {
       list = list.filter((p) => p.category === "sale" || (p.compareAtPrice && p.compareAtPrice > p.price));
     } else if (q.category === "outerwear") {
-      list = list.filter((p) => p.category === "outerwear" || p.subcategory.toLowerCase() === "outerwear");
+      list = list.filter((p) => p.category === "outerwear" || p.subcategory.toLowerCase() === "outerwear" || p.fabric?.toLowerCase() === "velvet");
+    } else if (q.category === "unstitched") {
+      list = list.filter((p) => p.category === "unstitched" || p.subcategory.toLowerCase() === "unstitched" || Boolean(p.unstitchedDetails));
+    } else if (q.category === "festive") {
+      list = list.filter((p) => p.category === "festive" || p.subcategory.toLowerCase() === "festive" || p.occasion === "Festive" || p.occasion === "Wedding Guest" || p.occasion === "Bridal");
     } else {
       list = list.filter((p) => p.category === q.category);
     }
@@ -169,11 +240,48 @@ export async function getProducts(q: ProductQuery = {}): Promise<Product[]> {
     list = list.filter((p) => p.subcategory.toLowerCase() === target);
   }
 
+  // Fabric filter
+  if (q.fabric) {
+    const fabrics = Array.isArray(q.fabric) ? q.fabric.map(f => f.toLowerCase()) : [q.fabric.toLowerCase()];
+    list = list.filter((p) => p.fabric && fabrics.includes(p.fabric.toLowerCase()));
+  }
+
+  // Piece count filter
+  if (q.pieceCount) {
+    const pieces = Array.isArray(q.pieceCount) ? q.pieceCount.map(p => p.toLowerCase()) : [q.pieceCount.toLowerCase()];
+    list = list.filter((p) => p.pieceCount && pieces.includes(p.pieceCount.toLowerCase()));
+  }
+
+  // Occasion filter
+  if (q.occasion) {
+    const occasions = Array.isArray(q.occasion) ? q.occasion.map(o => o.toLowerCase()) : [q.occasion.toLowerCase()];
+    list = list.filter((p) => p.occasion && occasions.includes(p.occasion.toLowerCase()));
+  }
+
+  // Sizes filter
+  if (q.sizes) {
+    const sizeList = Array.isArray(q.sizes) ? q.sizes : [q.sizes];
+    list = list.filter((p) => p.sizes && sizeList.some((s) => p.sizes.includes(s)));
+  }
+
+  // Price range filter
+  if (typeof q.minPrice === "number") {
+    list = list.filter((p) => p.price >= q.minPrice!);
+  }
+  if (typeof q.maxPrice === "number") {
+    list = list.filter((p) => p.price <= q.maxPrice!);
+  }
+
+  // In-stock filter
+  if (q.inStockOnly) {
+    list = list.filter((p) => typeof p.stock === "number" ? p.stock > 0 : true);
+  }
+
   return applySort(list, q.sort ?? "featured");
 }
 
 export async function getProductsByCategory(
-  category: "women" | "men" | "outerwear" | "sale" | "accessories",
+  category: import("./types").Category,
   sub?: string,
   sort: SortKey = "featured"
 ): Promise<Product[]> {

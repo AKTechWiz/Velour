@@ -4,9 +4,10 @@ import { useEffect, useState } from "react";
 import HeroContent from "./HeroContent";
 
 const SLIDES = [
-  "/images/products/wool-coat-1.jpg",
-  "/images/products/silk-slip-dress-1.jpg",
-  "/images/products/mens-overcoat-1.jpg",
+  "/images/products/green-lawn-1.jpg",
+  "/images/products/organza-festive-1.jpg",
+  "/images/products/mens-rawsilk-1.jpg",
+  "/images/products/velvet-suit-1.jpg",
 ];
 
 export default function HeroSlideshow() {

@@ -38,7 +38,7 @@ interface UserProfile {
   email?: string;
   profile?: {
     name?: string;
-  };
+  } | null;
 }
 
 const STEPS = [
@@ -77,7 +77,7 @@ export default function ProfilePage() {
         }
 
         if (!mounted) return;
-        setUser(authData.user);
+        setUser(authData.user as unknown as UserProfile);
 
         // Fetch user orders from InsForge database
         const { data: orderRows, error: orderError } = await insforge.database

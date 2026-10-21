@@ -5,7 +5,8 @@ const supabaseUrl =
 const supabaseAnonKey =
   process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
-  "";
+  "sb_publishable_t_EkaY6CvkeQ6jYU0uLAoA_z0rL5_eN";
 
 // Universal Supabase client for data querying across Server & Client components
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+

@@ -1,9 +1,14 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Inter } from "next/font/google";
 import "./globals.css";
 import { StoreProvider } from "@/lib/store";
+import { WishlistProvider } from "@/lib/wishlist";
+import AnnouncementBar from "@/components/AnnouncementBar";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import MiniBagDrawer from "@/components/MiniBagDrawer";
+import WishlistDrawer from "@/components/WishlistDrawer";
+import FloatingWhatsApp from "@/components/FloatingWhatsApp";
 
 const serif = Cormorant_Garamond({
   subsets: ["latin"],
@@ -16,10 +21,20 @@ const sans = Inter({
   variable: "--font-sans",
 });
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#faf8f5" },
+    { media: "(prefers-color-scheme: dark)", color: "#12100e" },
+  ],
+};
+
 export const metadata: Metadata = {
-  title: { default: "VELOUR — Premium Minimal Fashion", template: "%s · VELOUR" },
+  title: { default: "VELOUR — Luxury Pakistani Apparel & Contemporary Pret", template: "%s · VELOUR" },
   description:
-    "Premium minimal apparel for men and women. Considered design, honest materials.",
+    "Discover luxury ready-to-wear, unstitched lawn, festive ensembles, and bespoke menswear. Express nationwide delivery across Pakistan.",
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "any" },
@@ -48,11 +63,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className={`${serif.variable} ${sans.variable}`}>
         <StoreProvider>
-          <Navbar />
-          <main>{children}</main>
-          <Footer />
+          <WishlistProvider>
+            <AnnouncementBar />
+            <Navbar />
+            <main>{children}</main>
+            <Footer />
+            <MiniBagDrawer />
+            <WishlistDrawer />
+            <FloatingWhatsApp />
+          </WishlistProvider>
         </StoreProvider>
       </body>
     </html>
   );
 }
+

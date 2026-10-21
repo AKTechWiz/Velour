@@ -189,9 +189,10 @@ export default function AdminDashboard() {
         email: loginEmail.trim(),
         password: loginPassword,
       });
-      if (error) throw error;
-      setAdminUser(data.user);
-      toast("Signed in as administrator", "success");
+      if (data?.user) {
+        setAdminUser(data.user);
+        toast("Signed in as administrator", "success");
+      }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Sign in failed";
       setLoginError(msg);
@@ -1384,7 +1385,7 @@ export default function AdminDashboard() {
                             src={editProduct.images[0]}
                             alt="Main picture preview"
                             onError={(e) => {
-                              (e.target as HTMLImageElement).src = "/images/products/wool-coat-1.jpg";
+                              (e.target as HTMLImageElement).src = "/images/products/green-lawn-1.jpg";
                             }}
                           />
                           <div className="admin-modal-img-badge" style={{ background: "rgba(18, 16, 14, 0.95)", color: "#f0ede8" }}>
@@ -1488,7 +1489,7 @@ export default function AdminDashboard() {
                             src={editProduct.images[1]}
                             alt="Hover picture preview"
                             onError={(e) => {
-                              (e.target as HTMLImageElement).src = "/images/products/wool-coat-2.jpg";
+                              (e.target as HTMLImageElement).src = "/images/products/printed-lawn-1.jpg";
                             }}
                           />
                           <div className="admin-modal-img-badge" style={{ background: "rgba(18, 16, 14, 0.95)", color: "#f0ede8" }}>
