@@ -40,7 +40,7 @@ interface CacheEntry {
 }
 
 let cachedAllProducts: CacheEntry | null = null;
-const CACHE_TTL_MS = 60 * 1000; // 60 seconds
+const CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutes cache for instant performance
 
 export function clearProductsCache() {
   cachedAllProducts = null;
@@ -144,11 +144,13 @@ async function fetchBaseProductList(): Promise<Product[]> {
 
   let dbProducts: Product[] = [];
 
-  // 1. Fetch from InsForge database
+  // 1. Fetch from InsForge database with 1500ms timeout
   try {
-    const { data, error } = await insforge.database
-      .from("products")
-      .select("*");
+    const timeoutPromise = new Promise<{ data: null; error: Error }>((resolve) =>
+      setTimeout(() => resolve({ data: null, error: new Error("InsForge timeout") }), 1500)
+    );
+    const dbPromise = insforge.database.from("products").select("*");
+    const { data, error } = (await Promise.race([dbPromise, timeoutPromise])) as any;
 
     if (!error && data && data.length > 0) {
       dbProducts = data.map(mapProduct);
@@ -157,10 +159,14 @@ async function fetchBaseProductList(): Promise<Product[]> {
     console.warn("InsForge products query error:", err);
   }
 
-  // 2. Fallback to Supabase if InsForge is empty
+  // 2. Fallback to Supabase if InsForge is empty with 1500ms timeout
   if (dbProducts.length === 0) {
     try {
-      const { data, error } = await supabase.from("products").select("*");
+      const timeoutPromise = new Promise<{ data: null; error: Error }>((resolve) =>
+        setTimeout(() => resolve({ data: null, error: new Error("Supabase timeout") }), 1500)
+      );
+      const dbPromise = supabase.from("products").select("*");
+      const { data, error } = (await Promise.race([dbPromise, timeoutPromise])) as any;
       if (!error && data && data.length > 0) {
         dbProducts = data.map(mapProduct);
       }

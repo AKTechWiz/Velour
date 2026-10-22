@@ -12,6 +12,7 @@ export default function HeroVideo() {
         loop
         playsInline
         preload="auto"
+        poster="/images/products/lookbook-royal-crimson-ensemble.jpg"
         disablePictureInPicture
         onContextMenu={(e) => e.preventDefault()}
         style={{
