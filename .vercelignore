@@ -16,4 +16,5 @@ supabase
 supabase/**
 *.sql
 .next
-.next/**
+mockups
+mockups/**
