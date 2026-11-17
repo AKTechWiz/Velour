@@ -77,12 +77,11 @@ export default function MiniBagDrawer() {
           <div className="free-shipping-text">
             {freeShippingMet ? (
               <span className="free-shipping-success">
-                ✓ You have qualified for <strong>Free Nationwide Delivery</strong>!
+                Complimentary Express Nationwide Delivery Unlocked
               </span>
             ) : (
               <span>
-                Add <strong>{money(amountToFreeShipping)}</strong> more for{" "}
-                <strong>Free Delivery</strong>
+                Add <strong>{money(amountToFreeShipping)}</strong> for Complimentary Express Delivery
               </span>
             )}
           </div>
@@ -158,15 +157,15 @@ export default function MiniBagDrawer() {
                         onClick={() => decreaseQuantity(item.productId, item.size)}
                         aria-label="Decrease quantity"
                       >
-                        <IconMinus />
+                        <IconMinus width={12} height={12} />
                       </button>
-                      <span>{item.qty}</span>
+                      <span className="qty-stepper-val">{item.qty}</span>
                       <button
                         type="button"
                         onClick={() => increaseQuantity(item.productId, item.size)}
                         aria-label="Increase quantity"
                       >
-                        <IconPlus />
+                        <IconPlus width={12} height={12} />
                       </button>
                     </div>
                   </div>
@@ -207,10 +206,10 @@ export default function MiniBagDrawer() {
             <div style={{ textAlign: "center", marginTop: 12 }}>
               <Link
                 href="/track"
-                style={{ fontSize: "0.78rem", color: "var(--muted)", textDecoration: "underline" }}
+                style={{ fontSize: "0.78rem", color: "var(--muted)", textDecoration: "none" }}
                 onClick={() => setMiniBagOpen(false)}
               >
-                Track an Existing Shipment →
+                Track an Existing Shipment
               </Link>
             </div>
           </div>

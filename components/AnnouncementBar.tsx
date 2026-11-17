@@ -54,7 +54,7 @@ export default function AnnouncementBar() {
           <span className="announcement-text">{current.text}</span>
           {current.linkText && (
             <Link href={current.href} className="announcement-link">
-              {current.linkText} →
+              {current.linkText}
             </Link>
           )}
         </div>

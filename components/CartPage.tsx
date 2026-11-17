@@ -43,7 +43,7 @@ export default function CartPage() {
     if (code === "VELOUR10") {
       const disc = Math.round(subtotal * 0.1);
       setDiscountAmount(disc);
-      setAppliedPromo("VELOUR10 (10% Privilege Discount)");
+      setAppliedPromo("VELOUR10 (10% Atelier Courtesy)");
       push(`Applied 10% discount: -${money(disc)}`);
     } else if (code === "EID2026") {
       const disc = 1500;
@@ -147,12 +147,12 @@ export default function CartPage() {
         }}
       >
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "10px" }}>
-          <strong style={{ fontSize: "0.95rem", color: progressPercent >= 100 ? "var(--success)" : "var(--ink)" }}>
+          <strong style={{ fontSize: "0.92rem", color: "var(--ink)", letterSpacing: "0.02em" }}>
             {progressPercent >= 100
               ? "Complimentary Nationwide Delivery Unlocked"
-              : `Add ${money(remainingForFree)} more for Free Nationwide Delivery`}
+              : `Add ${money(remainingForFree)} for Complimentary Nationwide Delivery`}
           </strong>
-          <span style={{ fontSize: "0.85rem", color: "var(--muted)", fontWeight: 600 }}>
+          <span style={{ fontSize: "0.82rem", color: "var(--muted)", fontWeight: 500 }}>
             {progressPercent}%
           </span>
         </div>
@@ -161,9 +161,9 @@ export default function CartPage() {
         <div
           style={{
             width: "100%",
-            height: "8px",
+            height: "4px",
             background: "var(--line)",
-            borderRadius: "4px",
+            borderRadius: "2px",
             overflow: "hidden",
           }}
         >
@@ -171,7 +171,7 @@ export default function CartPage() {
             style={{
               width: `${progressPercent}%`,
               height: "100%",
-              background: progressPercent >= 100 ? "var(--success)" : "var(--gold)",
+              background: progressPercent >= 100 ? "var(--gold)" : "var(--ink)",
               transition: "width 0.4s ease",
             }}
           />

@@ -426,13 +426,14 @@ export default function CheckoutPage() {
 
   return (
     <div className="container checkout-page" style={{ margin: "40px auto 80px" }}>
-      {/* Prepaid Incentive Banner */}
+      {/* Order Fulfillment Reassurance */}
       <div className="checkout-privilege-banner">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" strokeWidth="1.75" style={{ flexShrink: 0 }}>
-          <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z" />
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ flexShrink: 0, color: "var(--gold)" }}>
+          <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
+          <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
         </svg>
-        <div style={{ fontSize: "0.88rem", color: "var(--ink)", lineHeight: 1.5 }}>
-          <strong style={{ color: "var(--ink)" }}>Prepaid Luxury Privilege:</strong> Pay online via Card, Raast, or JazzCash for priority courier dispatch and complimentary keepsake garment packaging.
+        <div className="checkout-privilege-text">
+          <span>Priority Fulfillment:</span> Prepaid orders (Card, Raast &amp; JazzCash) receive expedited atelier dispatch and complimentary archival keepsake packaging.
         </div>
       </div>
 
@@ -446,7 +447,6 @@ export default function CheckoutPage() {
           <section className="form-section">
             <div className="form-section-header">
               <h2>1. Contact Information</h2>
-              <span className="form-section-badge">Phone-first verification</span>
             </div>
             
             <div className="form-grid">

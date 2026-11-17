@@ -95,7 +95,7 @@ export default function AboutPage() {
 
       <div style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
         <Link href="/contact" className="btn btn-primary" style={{ padding: "14px 28px" }}>
-          Book Private Studio Visit →
+          Book Private Studio Visit
         </Link>
         <Link href="/festive" className="btn btn-ghost" style={{ padding: "14px 28px" }}>
           Explore Collections

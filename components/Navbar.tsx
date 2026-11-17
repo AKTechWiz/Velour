@@ -252,7 +252,7 @@ export default function Navbar() {
         }`}
       >
         <div className="container nav-inner">
-          {/* Column 1: Left - Bespoke 3-line luxury menu icon with generous margin from border */}
+          {/* Column 1: Left - Minimalist Luxury Menu Trigger */}
           <div className="nav-col-left">
             <button
               type="button"
@@ -266,7 +266,6 @@ export default function Navbar() {
               <span className="nav-menu-icon-bars" aria-hidden="true">
                 <span className="bar bar-1" />
                 <span className="bar bar-2" />
-                <span className="bar bar-3" />
               </span>
               <span className="nav-menu-label">Menu</span>
             </button>
@@ -355,8 +354,7 @@ export default function Navbar() {
       </header>
 
       {/* ========================================================
-          UNIFIED LUXURY NAVIGATION DRAWER / DIRECTORY
-          Hover or click on the 3-lines menu icon reveals this
+          EDITORIAL LUXURY DIRECTORY DRAWER
           ======================================================== */}
       {menuOpen && (
         <>
@@ -371,7 +369,7 @@ export default function Navbar() {
             onMouseLeave={handleMenuLeave}
             aria-label="Site Navigation Directory"
           >
-            <div className="drawer-header">
+            <div className="drawer-header nav-editorial-drawer-header">
               <Link href="/" className="nav-logo" onClick={() => setMenuOpen(false)}>
                 VELOUR
               </Link>
@@ -385,167 +383,137 @@ export default function Navbar() {
               </button>
             </div>
 
-            <nav className="mobile-nav-body nav-unified-body">
-              {/* Main Collections Section */}
-              <div className="mobile-nav-section">
-                <p className="mobile-section-heading">Atelier Collections</p>
+            <nav className="nav-editorial-directory-body">
+              {/* Primary Atelier Categories */}
+              <div className="nav-editorial-category-list">
+                <span className="nav-editorial-kicker">Collections</span>
+                
                 <Link
                   href="/women"
-                  className="mobile-nav-link"
+                  className="nav-editorial-link"
                   onClick={() => setMenuOpen(false)}
                 >
-                  <span>Women&apos;s Ready to Wear</span>
-                  <IconChevronRight />
+                  <span className="nav-editorial-num">01</span>
+                  <span className="nav-editorial-name">Ready-to-Wear</span>
                 </Link>
-                <Link
-                  href="/unstitched"
-                  className="mobile-nav-link"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  <span>Luxury Unstitched</span>
-                  <IconChevronRight />
-                </Link>
+
                 <Link
                   href="/festive"
-                  className="mobile-nav-link"
+                  className="nav-editorial-link"
                   onClick={() => setMenuOpen(false)}
                 >
-                  <span>Festive &amp; Formals</span>
-                  <IconChevronRight />
+                  <span className="nav-editorial-num">02</span>
+                  <span className="nav-editorial-name">Festive &amp; Formals</span>
                 </Link>
+
                 <Link
-                  href="/men"
-                  className="mobile-nav-link"
+                  href="/unstitched"
+                  className="nav-editorial-link"
                   onClick={() => setMenuOpen(false)}
                 >
-                  <span>Men&apos;s Eastern</span>
-                  <IconChevronRight />
+                  <span className="nav-editorial-num">03</span>
+                  <span className="nav-editorial-name">Luxury Unstitched</span>
                 </Link>
+
                 <Link
                   href="/outerwear"
-                  className="mobile-nav-link"
+                  className="nav-editorial-link"
                   onClick={() => setMenuOpen(false)}
                 >
-                  <span>Velvet &amp; Winter Capsule</span>
-                  <IconChevronRight />
+                  <span className="nav-editorial-num">04</span>
+                  <span className="nav-editorial-name">Velvet Winter Capsule</span>
                 </Link>
+
                 <Link
                   href="/festive?sub=Bridal+Couture"
-                  className="mobile-nav-link"
+                  className="nav-editorial-link"
                   onClick={() => setMenuOpen(false)}
                 >
-                  <span>Haute Couture &amp; Bridal</span>
-                  <IconChevronRight />
+                  <span className="nav-editorial-num">05</span>
+                  <span className="nav-editorial-name">Haute Couture &amp; Bridal</span>
                 </Link>
+
+                <Link
+                  href="/men"
+                  className="nav-editorial-link"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <span className="nav-editorial-num">06</span>
+                  <span className="nav-editorial-name">Men&apos;s Eastern</span>
+                </Link>
+
                 <Link
                   href="/accessories"
-                  className="mobile-nav-link"
+                  className="nav-editorial-link"
                   onClick={() => setMenuOpen(false)}
                 >
-                  <span>Fine Accessories &amp; Jewellery</span>
-                  <IconChevronRight />
+                  <span className="nav-editorial-num">07</span>
+                  <span className="nav-editorial-name">Fine Accessories</span>
                 </Link>
+
                 <Link
                   href="/sale"
-                  className="mobile-nav-link mobile-link-sale"
+                  className="nav-editorial-link nav-editorial-sale"
                   onClick={() => setMenuOpen(false)}
                 >
-                  <span>Curated Seasonal Sale</span>
-                  <IconChevronRight />
+                  <span className="nav-editorial-num">08</span>
+                  <span className="nav-editorial-name">Curated Seasonal Archive</span>
                 </Link>
               </div>
 
-              {/* Editorial & Stories */}
-              <div className="mobile-nav-section" style={{ marginTop: 24, paddingTop: 18, borderTop: "1px solid var(--line)" }}>
-                <p className="mobile-section-heading">Editorial &amp; Salons</p>
-                <Link
-                  href="/#lookbook"
-                  className="mobile-nav-link"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  <span>Shop The Look Editorial</span>
-                  <IconChevronRight />
-                </Link>
-                <Link
-                  href="/about"
-                  className="mobile-nav-link"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  <span>The Karigar Guild &amp; Provenance</span>
-                  <IconChevronRight />
-                </Link>
-                <Link
-                  href="/contact"
-                  className="mobile-nav-link"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  <span>Flagship Salons (Karachi · Lahore)</span>
-                  <IconChevronRight />
-                </Link>
-              </div>
-
-              {/* Client Care & Account */}
-              <div className="mobile-nav-section" style={{ marginTop: 24, paddingTop: 18, borderTop: "1px solid var(--line)" }}>
-                <p className="mobile-section-heading">Client Services</p>
-                <Link
-                  href="/track"
-                  className="mobile-nav-link"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  <span>Track Your Shipment (TCS Express)</span>
-                  <IconChevronRight />
-                </Link>
-                <Link
-                  href={currentUser ? "/profile" : "/login"}
-                  className="mobile-nav-link"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  <span>{currentUser ? "My Profile & Orders" : "Sign In / Register"}</span>
-                  <IconChevronRight />
-                </Link>
-                <button
-                  type="button"
-                  className="mobile-nav-link"
-                  style={{ width: "100%", textAlign: "left", background: "none", border: "none", borderBottom: "1px solid var(--line)", cursor: "pointer" }}
-                  onClick={() => {
-                    setMenuOpen(false);
-                    setWishlistOpen(true);
-                  }}
-                >
-                  <span>Saved Pieces ({wishlistCount})</span>
-                  <IconChevronRight />
-                </button>
+              {/* Editorial & Flagship Salons */}
+              <div className="nav-editorial-subnav">
+                <span className="nav-editorial-kicker">Maison &amp; Salons</span>
+                <div className="nav-editorial-sublinks">
+                  <Link href="/#lookbook" onClick={() => setMenuOpen(false)}>
+                    Campaign Lookbook
+                  </Link>
+                  <Link href="/about" onClick={() => setMenuOpen(false)}>
+                    Karigar Guild &amp; Heritage
+                  </Link>
+                  <Link href="/contact" onClick={() => setMenuOpen(false)}>
+                    Flagship Salons (Karachi · Lahore)
+                  </Link>
+                  <Link href="/track" onClick={() => setMenuOpen(false)}>
+                    Track Your Shipment
+                  </Link>
+                  <Link href={currentUser ? "/profile" : "/login"} onClick={() => setMenuOpen(false)}>
+                    {currentUser ? "Client Profile & Orders" : "Sign In / Register"}
+                  </Link>
+                  <button
+                    type="button"
+                    className="nav-editorial-btn-link"
+                    onClick={() => {
+                      setMenuOpen(false);
+                      setWishlistOpen(true);
+                    }}
+                  >
+                    Saved Pieces ({wishlistCount})
+                  </button>
+                </div>
               </div>
 
               {/* Bespoke Concierge Card */}
-              <div
-                style={{
-                  marginTop: 24,
-                  padding: "18px 20px",
-                  borderRadius: "8px",
-                  background: "var(--surface)",
-                  border: "1px solid var(--line)",
-                }}
-              >
-                <p style={{ margin: "0 0 6px", fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.14em", color: "var(--gold)", fontWeight: 700 }}>
-                  Private Concierge
-                </p>
-                <p style={{ margin: "0 0 12px", fontSize: "0.85rem", color: "var(--muted)", lineHeight: 1.5 }}>
-                  Bespoke bridal consultations &amp; order assistance via WhatsApp.
+              <div className="nav-editorial-concierge">
+                <div className="nav-concierge-header">
+                  <span className="nav-concierge-dot" />
+                  <span className="nav-concierge-kicker">Atelier Concierge</span>
+                </div>
+                <p className="nav-concierge-text">
+                  Private bridal appointments, custom measurements, and bespoke order advisory.
                 </p>
                 <a
                   href="https://wa.me/923008259142?text=Hello%20Velour%20Concierge"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn btn-outline"
-                  style={{ display: "inline-flex", width: "100%", justifyContent: "center", fontSize: "0.82rem", padding: "10px 16px" }}
+                  className="nav-concierge-btn"
                 >
-                  WhatsApp Concierge →
+                  Connect with Stylist
                 </a>
               </div>
             </nav>
 
-            <div className="drawer-footer">
+            <div className="drawer-footer nav-editorial-drawer-footer">
               <button className="drawer-theme-toggle" onClick={toggleTheme}>
                 {theme === "dark" ? <IconSun /> : <IconMoon />}
                 <span>{theme === "dark" ? "Light Mode" : "Dark Mode"}</span>

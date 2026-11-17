@@ -7,19 +7,11 @@ const WHATSAPP_NUMBER = "923001234567"; // Brand WhatsApp concierge number
 
 export default function FloatingWhatsApp() {
   const [isOpen, setIsOpen] = useState(false);
-  const [isOnline, setIsOnline] = useState(true);
   const [currentUrl, setCurrentUrl] = useState("");
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       setCurrentUrl(window.location.href);
-      // Check PKT time (UTC+5)
-      const now = new Date();
-      const utc = now.getTime() + now.getTimezoneOffset() * 60000;
-      const pktDate = new Date(utc + 5 * 3600000);
-      const hour = pktDate.getHours();
-      // Online between 10:00 AM and 10:00 PM PKT
-      setIsOnline(hour >= 10 && hour < 22);
     }
   }, []);
 
@@ -35,9 +27,8 @@ export default function FloatingWhatsApp() {
           <div className="floating-wa-header">
             <div>
               <p className="floating-wa-title">VELOUR Concierge</p>
-              <p className="floating-wa-status">
-                <span className={`wa-status-dot ${isOnline ? "online" : "offline"}`} />
-                {isOnline ? "Stylist Online (10am–10pm PKT)" : "Offline (Replies within 8 hours)"}
+              <p className="floating-wa-status" style={{ fontSize: "11px", color: "var(--muted)" }}>
+                Client Advisory &amp; Bespoke Inquiries
               </p>
             </div>
             <button
@@ -77,7 +68,6 @@ export default function FloatingWhatsApp() {
         aria-label="Contact stylist on WhatsApp"
       >
         <IconWhatsApp />
-        <span className={`wa-badge-dot ${isOnline ? "online" : "offline"}`} />
       </button>
     </div>
   );

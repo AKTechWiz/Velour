@@ -112,7 +112,6 @@ export default function ContactPage() {
                 >
                   +92 300 8259142
                 </a>
-                <span style={{ display: "block", fontSize: "0.75rem", color: "var(--muted)" }}>Average reply: under 10 minutes</span>
               </div>
             </div>
 

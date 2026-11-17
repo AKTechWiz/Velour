@@ -170,12 +170,9 @@ export default function ProductDetail({ product }: ProductDetailProps) {
             ======================================================== */}
         <div className="pdp-buybox-column">
           <div className="pdp-sticky-buybox">
-            {/* Hierarchy Tags & Subtitle */}
-            <div className="pdp-tags-row">
-              {product.pieceCount && <span className="pdp-meta-pill">{product.pieceCount}</span>}
-              {product.fabric && <span className="pdp-meta-pill">{product.fabric}</span>}
-              {product.workType && <span className="pdp-meta-pill">{product.workType}</span>}
-              {product.occasion && <span className="pdp-meta-pill">{product.occasion}</span>}
+            {/* Editorial Category Eyebrow */}
+            <div className="pdp-editorial-kicker">
+              {[product.occasion || "Festive Couture", product.fabric, product.pieceCount].filter(Boolean).join(" · ")}
             </div>
 
             {/* Product Title */}
@@ -188,20 +185,15 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                 <>
                   <s className="pdp-compare-price">{money(product.compareAtPrice)}</s>
                   <span className="pdp-discount-badge">
-                    Save {Math.round(((product.compareAtPrice - product.price) / product.compareAtPrice) * 100)}%
+                    ({Math.round(((product.compareAtPrice - product.price) / product.compareAtPrice) * 100)}% off)
                   </span>
                 </>
               )}
             </div>
 
-            {/* Stock / Atelier status */}
-            <div className="pdp-stock-status">
-              <span className="stock-dot live" />
-              <span>
-                {product.stock && product.stock <= 5
-                  ? `Limited Edition — Only ${product.stock} pieces remaining in Atelier`
-                  : "Handcrafted in Limited Atelier Batches • Ready for Dispatch"}
-              </span>
+            {/* Atelier Craftsmanship Note (No Fake Urgency / No Green Dot) */}
+            <div className="pdp-craft-note">
+              <span>Atelier Edition · Meticulously Handcrafted in Pakistan</span>
             </div>
 
             {/* Short editorial description */}
@@ -302,8 +294,24 @@ export default function ProductDetail({ product }: ProductDetailProps) {
               </button>
             </div>
 
-            {/* CITY DELIVERY ESTIMATOR */}
-            <CityDeliveryEstimator productPrice={unitPrice} />
+            {/* Symmetrical Luxury Reassurance Perks */}
+            <div className="pdp-luxury-perks">
+              <div className="pdp-perk-item">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <rect x="1" y="3" width="15" height="13" />
+                  <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
+                  <circle cx="5.5" cy="18.5" r="2.5" />
+                  <circle cx="18.5" cy="18.5" r="2.5" />
+                </svg>
+                <span>Complimentary nationwide delivery across Pakistan (2–4 business days)</span>
+              </div>
+              <div className="pdp-perk-item">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                </svg>
+                <span>100% Pure artisanal weaves · 14-day exchange privilege</span>
+              </div>
+            </div>
 
             {/* UNSTITCHED GARMENT BREAKDOWN (WHAT'S IN THE BOX) */}
             {product.unstitchedDetails && (
@@ -383,9 +391,10 @@ export default function ProductDetail({ product }: ProductDetailProps) {
                     <p>
                       <strong>Nationwide Pakistan Delivery:</strong> Complimentary express delivery on all orders over Rs. 5,000. Standard courier dispatch via TCS, Leopards, or Trax.
                     </p>
-                    <p style={{ marginTop: 6 }}>
+                    <p style={{ marginTop: 6, marginBottom: 14 }}>
                       <strong>14-Day Exchange Policy:</strong> Unused, unwashed garments with original tags intact may be exchanged within 14 days of delivery.
                     </p>
+                    <CityDeliveryEstimator productPrice={unitPrice} />
                   </div>
                 )}
               </div>

@@ -3,42 +3,42 @@ import Link from "next/link";
 export default function HeroContent() {
   return (
     <>
-      <div className="container hero-container-left">
-        <div className="hero-content-left">
-          <p className="hero-eyebrow-minimal anim-item" style={{ animationDelay: "0.15s" }}>
-            AUTUMN / WINTER COLLECTION
+      <div className="container hero-container-centered">
+        <div className="hero-content-centered">
+          <p className="hero-eyebrow-centered anim-item" style={{ animationDelay: "0.15s" }}>
+            ATELIER 2026 · FESTIVE &amp; READY-TO-WEAR
           </p>
 
-          <h1 className="hero-title-left">
+          <h1 className="hero-title-centered">
             <span className="anim-item" style={{ animationDelay: "0.3s", display: "inline-block" }}>
-              Quiet luxury,
+              The Art of Subcontinental
             </span>
             <br />
             <span className="anim-item" style={{ animationDelay: "0.45s", display: "inline-block" }}>
-              worn daily.
+              Needlecraft &amp; Couture
             </span>
           </h1>
 
-          <p className="hero-sub-left anim-item" style={{ animationDelay: "0.6s" }}>
-            Considered fabrics and timeless silhouettes for women and men.
+          <p className="hero-sub-centered anim-item" style={{ animationDelay: "0.6s" }}>
+            Pure hand-spun raw silks, 80s combed lawn, and heirloom zardozi embroidery.
             <br />
-            Essentials designed to outlast the season.
+            Timeless silhouettes tailored by master Karigars across Lahore and Multan.
           </p>
 
-          <div className="hero-ctas-left anim-item" style={{ animationDelay: "0.75s" }}>
-            <Link href="/women" className="hero-btn">
-              Shop Women
+          <div className="hero-ctas-centered anim-item" style={{ animationDelay: "0.75s" }}>
+            <Link href="/women" className="hero-btn-luxury hero-btn-luxury-solid">
+              Shop Women&apos;s Pret
             </Link>
-            <Link href="/men" className="hero-btn">
-              Shop Men
+            <Link href="/festive" className="hero-btn-luxury hero-btn-luxury-outline">
+              Explore Festive Edit
             </Link>
           </div>
         </div>
       </div>
 
-      <a href="#categories" className="hero-scroll-vertical" aria-label="Scroll to collections">
-        <span>SCROLL</span>
-        <span className="hero-scroll-bar" />
+      <a href="#trust" className="hero-scroll-centered" aria-label="Scroll to collections">
+        <span>EXPLORE</span>
+        <span className="hero-scroll-line" />
       </a>
     </>
   );
